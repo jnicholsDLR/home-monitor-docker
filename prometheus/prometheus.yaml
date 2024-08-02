@@ -31,7 +31,6 @@ scrape_configs:
         - "192.168.1.1"
         - "192.168.1.110"
         - "192.168.1.231"
-        - "192.168.1.234"
         # remote targets - interesting endpoints on the internet that are important to functional connectivity
         - "dns.google"
         - "one.one.one.one"
