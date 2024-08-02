@@ -1,0 +1,8 @@
+# see https://github.com/prometheus/blackbox_exporter/blob/master/example.yml for examples
+---
+modules:
+  icmp:
+    prober: icmp
+    timeout: 5s
+    icmp:
+      preferred_ip_protocol: "ip4"

@@ -1,0 +1,59 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+      scheme: http
+      timeout: 10s
+      api_version: v1
+scrape_configs:
+  # collect metrics about the prometheus server itself
+  - job_name: prometheus
+    honor_timestamps: true
+    scrape_interval: 15s
+    scrape_timeout: 10s
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets:
+          - localhost:9090
+  # collect metrics about ICMP endpoints from blackbox-exporter
+  - job_name: "ping"
+    metrics_path: "/probe"
+    params:
+      module: ["icmp"]
+    static_configs:
+      - targets:
+        # local targets - ensure that they are always online for best monitoring results
+        - "192.168.1.1"
+        - "192.168.1.110"
+        - "192.168.1.231"
+        - "192.168.1.234"
+        # remote targets - interesting endpoints on the internet that are important to functional connectivity
+        - "dns.google"
+        - "one.one.one.one"
+        - "reddit.com"
+        - "google.com"
+        - "fast.com"
+        - "speedtest.net"
+        - "amazon.com"
+        - "apple.com"
+        - "microsoft.com"
+        - "github.com"
+        - "discord.com"
+        - "zoom.us"
+        - "twitch.tv"
+        - "youtube.com"
+        - "hulu.com"
+        - "spotify.com"
+        - "soundcloud.com"
+    relabel_configs:
+      - source_labels: ["__address__"]
+        target_label: "__param_target"
+      - source_labels: ["__param_target"]
+        target_label: "instance"
+      - target_label: "__address__"
+        replacement: "blackbox:9115"

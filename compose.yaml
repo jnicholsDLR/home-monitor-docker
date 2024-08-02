@@ -1,0 +1,51 @@
+services:
+
+  # collect metrics about ICMP endpoints and expose as an http endpoint
+  blackbox:
+    container_name: home-monitor-blackbox
+    # requires NET_RAW capability to send ICMP packets
+    cap_add:
+      - NET_RAW
+    # documentation: https://hub.docker.com/r/bitnami/blackbox-exporter
+    image: bitnami/blackbox-exporter
+    command:
+      - '--config.file=/config/blackbox.yaml'
+    ports:
+      - 9115:9115
+    restart: unless-stopped
+    volumes:
+      - ./blackbox:/config
+
+  # collect and store metrics in a time-series database
+  prometheus:
+    container_name: home-monitor-prometheus
+    # documentation: https://hub.docker.com/r/bitnami/prometheus
+    image: bitnami/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prom_data:/prometheus
+
+  # visualize prometheus metrics via dashboards
+  grafana:
+    container_name: home-monitor-grafana
+    # documentation: https://hub.docker.com/r/grafana/grafana
+    image: grafana/grafana  
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - ./grafana:/etc/grafana/provisioning/datasources
+      - ./grafana/dashboard.yaml:/etc/grafana/provisioning/dashboards/main.yaml
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+
+# persistent storage for prometheus metrics
+volumes:
+  prom_data:
