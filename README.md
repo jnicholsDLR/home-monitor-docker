@@ -14,13 +14,13 @@ This repository contains a docker-compose file to run a basic home monitoring sy
 ## Usage
 
 1. Clone this repository.
-2. Change to the repository directory and start the services:
-```bash
-cd home-monitor-docker
-# -d flag runs the services in the background
-docker-compose up -d
-```
-4. Access Grafana at [http://localhost:3000](http://localhost:3000) with the following credentials:
+1. Change to the repository directory and start the services:
+   ```bash
+   cd home-monitor-docker
+   # -d flag runs the services in the background
+   docker-compose up -d
+   ```
+1. Access Grafana at [http://localhost:3000](http://localhost:3000) with the following credentials:
     - Username: `admin`
     - Password: `admin`
 
